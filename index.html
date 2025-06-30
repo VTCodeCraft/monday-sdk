@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Click-to-Call Dialer</title>
+  <script src="https://cdn.jsdelivr.net/npm/monday-sdk-js/dist/main.js"></script>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+  <h1>📞 Click-to-Call Dialer</h1>
+  <div id="output">
+    <p>Loading Monday context...</p>
+  </div>
+
+  <script>
+    const monday = window.mondaySdk();
+
+    // Request context from Monday.com
+    monday.get("context").then((res) => {
+      const context = res.data;
+      console.log("✅ Context from Monday:", context);
+
+      const boardId = context.boardId;
+      const itemId = context.itemId;
+      const userId = context.user.id;
+      const workspaceId = context.workspaceId;
+
+      document.getElementById("output").innerHTML = `
+        <p>🧾 <strong>Board ID:</strong> ${boardId}</p>
+        <p>📌 <strong>Item ID:</strong> ${itemId}</p>
+        <p>👤 <strong>User ID:</strong> ${userId}</p>
+        <p>💼 <strong>Workspace ID:</strong> ${workspaceId}</p>
+      `;
+    });
+  </script>
+</body>
+</html>
