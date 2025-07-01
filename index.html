@@ -47,26 +47,21 @@
 
         // Query to fetch all column values
         const query = `
-          query {
-            items(ids: [${itemId}]) {
-              column_values {
-                id
-                title
-                text
-              }
-            }
-          }
-        `;
+  query {
+    items(ids: [${itemId}]) {
+      column_values(ids: ["phone"]) {
+        id
+        text
+        value
+      }
+    }
+  }
+`;
 
         monday.api(query).then((res) => {
-          const columns = res?.data?.items?.[0]?.column_values || [];
-          const phoneColumn = columns.find(col =>
-            col.id.toLowerCase().includes("phone") || col.title.toLowerCase().includes("phone")
-          );
-
-          const phoneNumber = phoneColumn?.text || "Not found";
-          document.getElementById("phoneValue").textContent = phoneNumber;
-          console.log("📞 Phone:", phoneNumber);
+          const phone = res?.data?.items?.[0]?.column_values?.[0]?.text || "Not found";
+          document.getElementById("phoneValue").textContent = phone;
+          console.log("📞 Phone:", phone);
         }).catch((err) => {
           console.error("❌ Error fetching phone number:", err);
           document.getElementById("phoneValue").textContent = "Error fetching phone";
