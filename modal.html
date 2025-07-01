@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>📞 Softphone Dialer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .dialer {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      width: 320px;
+      text-align: center;
+    }
+
+    .dialer h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .number-display {
+      font-size: 22px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      font-size: 18px;
+      padding: 15px;
+      border: none;
+      background: #e0e0e0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: #ccc;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .call-btn {
+      background: #4CAF50;
+      color: white;
+      flex: 1;
+      margin-right: 10px;
+    }
+
+    .end-btn {
+      background: #f44336;
+      color: white;
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="dialer">
+    <h2>📞 Softphone Dialer</h2>
+    <input type="text" id="phoneNumber" class="number-display" placeholder="Enter number" readonly />
+
+    <div class="buttons">
+      <button class="btn" onclick="appendDigit('1')">1</button>
+      <button class="btn" onclick="appendDigit('2')">2</button>
+      <button class="btn" onclick="appendDigit('3')">3</button>
+      <button class="btn" onclick="appendDigit('4')">4</button>
+      <button class="btn" onclick="appendDigit('5')">5</button>
+      <button class="btn" onclick="appendDigit('6')">6</button>
+      <button class="btn" onclick="appendDigit('7')">7</button>
+      <button class="btn" onclick="appendDigit('8')">8</button>
+      <button class="btn" onclick="appendDigit('9')">9</button>
+      <button class="btn" onclick="appendDigit('*')">*</button>
+      <button class="btn" onclick="appendDigit('0')">0</button>
+      <button class="btn" onclick="appendDigit('#')">#</button>
+    </div>
+
+    <div class="controls">
+      <button class="btn call-btn" onclick="startCall()">Call</button>
+      <button class="btn end-btn" onclick="endCall()">End</button>
+    </div>
+  </div>
+
+  <script>
+    function appendDigit(digit) {
+      const input = document.getElementById('phoneNumber');
+      input.value += digit;
+    }
+
+    function startCall() {
+      const number = document.getElementById('phoneNumber').value;
+      if (!number) return alert("Enter a number to call.");
+
+      console.log("📞 Calling", number);
+
+      // Replace this with actual call API
+      alert(`📞 Dialing ${number}...`);
+    }
+
+    function endCall() {
+      console.log("📴 Call ended.");
+      alert("Call ended.");
+    }
+  </script>
+</body>
+</html>
