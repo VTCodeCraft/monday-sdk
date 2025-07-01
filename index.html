@@ -47,16 +47,16 @@
 
         // Query to fetch all column values
         const query = `
-  query {
-    items(ids: [${itemId}]) {
-      column_values(ids: ["Phone"]) {
-        id
-        text
-        value
-      }
-    }
-  }
-`;
+              query {
+                items(ids: [${itemId}]) {
+                  column_values(ids: ["Phone"]) {
+                    id
+                    text
+                    value
+                  }
+                }
+              }
+            `;
 
         monday.api(query).then((res) => {
           const phone = res?.data?.items?.[0]?.column_values?.[0]?.text || "Not found";
