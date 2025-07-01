@@ -1,49 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Click-to-Call Dialer</title>
   <script src="https://cdn.jsdelivr.net/npm/monday-sdk-js/dist/main.js"></script>
 </head>
-<body style="font-family: Arial, sans-serif; padding: 20px;">
-  <h1>📞 Click-to-Call Dialer</h1>
-  <div id="output">
-    <p>Loading Monday context...</p>
-  </div>
 
-  <button id="openModalBtn" style="margin-top: 20px; padding: 10px 16px;">
-    ➕ Open App Feature Modal
-  </button>
+<body style="font-family: Arial, sans-serif; background-color: #f5f7fa; margin: 0; padding: 40px;">
+  <div
+    style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);">
 
-  <script>
-    const monday = window.mondaySdk();
+    <h1 style="color: #2d3748; font-size: 26px; margin-bottom: 20px;">📞 Click-to-Call Dialer</h1>
 
-    // Request context from Monday.com
-    monday.get("context").then((res) => {
-      const context = res.data;
-      console.log("✅ Context from Monday:", context);
+    <div id="output"
+      style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; color: #1a202c;">
+      <p>Loading Monday context...</p>
+    </div>
 
-      const boardId = context.boardId;
-      const itemId = context.itemId;
-      const userId = context.user.id;
-      const workspaceId = context.workspaceId;
+    <button id="openModalBtn"
+      style="background-color: #0073ea; color: white; border: none; border-radius: 6px; padding: 12px 18px; font-size: 16px; cursor: pointer; transition: background-color 0.3s;">
+      ➕ Open App Feature Modal
+    </button>
+    <script>
+      const monday = window.mondaySdk();
 
-      document.getElementById("output").innerHTML = `
+      // Request context from Monday.com
+      monday.get("context").then((res) => {
+        const context = res.data;
+        const boardId = context.boardId;
+        const itemId = context.itemId;
+        const userId = context.user.id;
+        const workspaceId = context.workspaceId;
+
+        // Display context
+        document.getElementById("output").innerHTML = `
         <p>🧾 <strong>Board ID:</strong> ${boardId}</p>
         <p>📌 <strong>Item ID:</strong> ${itemId}</p>
         <p>👤 <strong>User ID:</strong> ${userId}</p>
         <p>💼 <strong>Workspace ID:</strong> ${workspaceId}</p>
+        <p>📞 <strong>Phone:</strong> Fetching...</p>
       `;
-    });
 
-    // Trigger openAppFeatureModal
-    document.getElementById("openModalBtn").addEventListener("click", () => {
-      monday.execute("openAppFeatureModal", {
-        urlPath: "/modal.html", // change this to your modal route
-        height: 500,
-        width: 800
+        // Fetch phone number (adjust "phone" if your column ID is different)
+        const query = `
+        query {
+          items(ids: [${itemId}]) {
+            column_values(ids: ["phone"]) {
+              id
+              title
+              text
+            }
+          }
+        }
+      `;
+
+        monday.api(query).then((res) => {
+          const phone = res?.data?.items?.[0]?.column_values?.[0]?.text || "Not found";
+          document.querySelector("#output").innerHTML += `<p>📱 <strong>Phone Number:</strong> ${phone}</p>`;
+          console.log("📞 Phone:", phone);
+        });
       });
-    });
-  </script>
+
+      // Open modal
+      document.getElementById("openModalBtn").addEventListener("click", () => {
+        monday.execute("openAppFeatureModal", {
+          urlPath: "/modal.html",
+          height: 500,
+          width: 800
+        });
+      });
+    </script>
 </body>
+
 </html>
