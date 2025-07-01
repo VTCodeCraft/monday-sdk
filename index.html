@@ -22,58 +22,67 @@
       style="background-color: #0073ea; color: white; border: none; border-radius: 6px; padding: 12px 18px; font-size: 16px; cursor: pointer; transition: background-color 0.3s;">
       ➕ Open App Feature Modal
     </button>
+
     <script>
       const monday = window.mondaySdk();
-      monday.get("context").then((res) => {
-        console.log("Context:", res.data);
-      });
 
-      // Request context from Monday.com
       monday.get("context").then((res) => {
         const context = res.data;
+        console.log("Context:", context);
+
         const boardId = context.boardId;
         const itemId = context.itemId;
         const userId = context.user.id;
         const workspaceId = context.workspaceId;
 
-        // Display context
-        document.getElementById("output").innerHTML = `
-        <p>🧾 <strong>Board ID:</strong> ${boardId}</p>
-        <p>📌 <strong>Item ID:</strong> ${itemId}</p>
-        <p>👤 <strong>User ID:</strong> ${userId}</p>
-        <p>💼 <strong>Workspace ID:</strong> ${workspaceId}</p>
-        <p>📞 <strong>Phone:</strong> Fetching...</p>
-      `;
+        // Insert basic context info first
+        const output = document.getElementById("output");
+        output.innerHTML = `
+          <p>🧾 <strong>Board ID:</strong> ${boardId}</p>
+          <p>📌 <strong>Item ID:</strong> ${itemId}</p>
+          <p>👤 <strong>User ID:</strong> ${userId}</p>
+          <p>💼 <strong>Workspace ID:</strong> ${workspaceId}</p>
+          <p>📞 <strong>Phone:</strong> <span id="phoneValue">Fetching...</span></p>
+        `;
 
-        // Fetch phone number (adjust "phone" if your column ID is different)
+        // Query to fetch all column values
         const query = `
-        query {
-          items(ids: [${itemId}]) {
-            column_values(ids: ["phone"]) {
-              id
-              title
-              text
+          query {
+            items(ids: [${itemId}]) {
+              column_values {
+                id
+                title
+                text
+              }
             }
           }
-        }
-      `;
+        `;
 
         monday.api(query).then((res) => {
-          const phone = res?.data?.items?.[0]?.column_values?.[0]?.text || "Not found";
-          document.querySelector("#output").innerHTML += `<p>📱 <strong>Phone Number:</strong> ${phone}</p>`;
-          console.log("📞 Phone:", phone);
+          const columns = res?.data?.items?.[0]?.column_values || [];
+          const phoneColumn = columns.find(col =>
+            col.id.toLowerCase().includes("phone") || col.title.toLowerCase().includes("phone")
+          );
+
+          const phoneNumber = phoneColumn?.text || "Not found";
+          document.getElementById("phoneValue").textContent = phoneNumber;
+          console.log("📞 Phone:", phoneNumber);
+        }).catch((err) => {
+          console.error("❌ Error fetching phone number:", err);
+          document.getElementById("phoneValue").textContent = "Error fetching phone";
         });
       });
 
       // Open modal
       document.getElementById("openModalBtn").addEventListener("click", () => {
         monday.execute("openAppFeatureModal", {
-          urlPath: "/modal.html",
+          urlPath: "/modal.html", // Make sure this file is deployed and accessible
           height: 500,
           width: 800
         });
       });
     </script>
+  </div>
 </body>
 
 </html>
