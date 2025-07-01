@@ -24,6 +24,9 @@
     </button>
     <script>
       const monday = window.mondaySdk();
+      monday.get("context").then((res) => {
+        console.log("Context:", res.data);
+      });
 
       // Request context from Monday.com
       monday.get("context").then((res) => {
